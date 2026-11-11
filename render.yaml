@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: catnip-jogo
+    runtime: docker
+    plan: free
+    healthCheckPath: /saude

@@ -27,6 +27,27 @@ No celular aparecem botões de toque.
 > Execute sempre a partir da pasta do projeto, para o servidor achar a pasta
 > `web/` e gravar o `placar.properties`.
 
+## Publicar na web (acessar de qualquer dispositivo)
+
+O projeto já vem com `Dockerfile` e `render.yaml`. Cada visitante recebe um
+cookie (`sid`) e joga a **própria partida**, então várias pessoas podem jogar
+ao mesmo tempo. A porta vem da variável `PORT` (padrão 8080).
+
+Exemplo com o **Render** (plano gratuito):
+
+1. Suba esta pasta para um repositório no GitHub.
+2. Em render.com, entre com o GitHub e clique em **New → Blueprint**
+   (ou **New → Web Service** e escolha *Docker*).
+3. Selecione o repositório e confirme. Em ~3 minutos o Render gera um link
+   `https://catnip-jogo.onrender.com` (ou parecido).
+
+Observações:
+- No plano gratuito o serviço "dorme" após ~15 min sem uso e leva ~1 minuto
+  para acordar no primeiro acesso.
+- O disco é temporário: o placar (`dados/`) zera quando o serviço reinicia.
+  Para guardar de forma permanente, use um disco persistente (plano pago)
+  e aponte `DATA_DIR` para ele.
+
 ## Como funciona
 
 O navegador só desenha e envia as teclas. Toda a regra do jogo roda no Java:
