@@ -1,0 +1,301 @@
+@import url('https://fonts.googleapis.com/css2?family=Delius&family=Jersey+10&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Pixelify+Sans:wght@400..700&family=Poppins:wght@400;500;600;700&family=VT323&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: "Jersey 10", sans-serif;
+    font-weight: 100;
+    font-size: 25px;
+    font-style: normal;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100dvh;
+    overflow: hidden;              /* sem rolagem da página */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #14161c url("gif/fundo.png") center / cover no-repeat;
+    color: #f4f4f6;
+}
+
+/* Estrutura do jogo */
+
+.jogo {
+    width: 100%;
+    height: 100dvh;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Placar lateral */
+
+.placar {
+    width: 130px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.info {
+    background: #3b4258;
+    box-shadow:
+        1px 1px 0px #2c3144,
+        2px 2px 0px #2c3144,
+        3px 3px 0px #2c3144,
+        4px 4px 0px #2c3144,
+        5px 5px 0px #2c3144;
+    border: solid 5px #2c3144;
+    padding: 12px 6px;
+    text-align: center;
+}
+
+.info .rotulo {
+    display: block;
+    line-height: 1.2;
+    opacity: 0.8;
+    min-height: auto;
+    font-size: 20px;
+}
+
+.info strong {
+    font-size: 1.3rem;
+    color: #f1d98f;
+}
+
+/* Estrada: mantém proporção 3:5 e sempre cabe na tela
+   (largura = menor valor entre a largura da tela, 60% da altura livre e 360px) */
+
+.estrada {
+    position: relative;
+    width: min(calc(100vw - 30px), calc((100dvh - 30px) * 0.6), 360px);
+    height: auto;
+    aspect-ratio: 3 / 5;
+    container-type: inline-size;
+    overflow: hidden;
+    border: 5px solid #106d1b;
+    background: #3a3d45;
+    flex-shrink: 0;
+}
+
+.faixas {
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(to bottom, #f2f2f2 0 24px, transparent 24px 48px)
+        calc(100% / 3) 0 / 6px 100% no-repeat,
+        repeating-linear-gradient(to bottom, #f2f2f2 0 24px, transparent 24px 48px)
+        calc(200% / 3) 0 / 6px 100% no-repeat;
+}
+
+.estrada.correndo .faixas {
+    animation: rolar 0.5s linear infinite;
+}
+
+@keyframes rolar {
+    from {
+        background-position-y: 0, 0;
+    }
+
+    to {
+        background-position-y: 48px, 48px;
+    }
+}
+
+/* Itens e jogador */
+
+#itens {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.item {
+    position: absolute;
+    width: calc(100% / 3);
+    text-align: center;
+    line-height: 1;
+    transform: translateY(-50%);
+}
+
+/* Imagens dos obstáculos (proporcionais à largura da estrada) */
+
+.item img {
+    display: block;
+    object-fit: contain;
+    margin: 0 auto;
+    pointer-events: none;
+    user-select: none;
+}
+
+.item.pedra img,
+.item.buraco img,
+.item.carro img {
+    width: 16.67cqw;   /* equivale a 60px em 360px */
+    height: 33.33cqw;  /* equivale a 120px em 360px */
+}
+
+/* Moedas */
+
+.item.moeda img {
+    width: 18cqw;
+    height: 18cqw;
+}
+
+/* Jogador: ocupa exatamente uma faixa e fica centralizado nela.
+   Começa na faixa do meio; o game.js continua controlando o "left". */
+
+.jogador {
+    position: absolute;
+    inset: auto;
+    left: calc(100% / 3);
+    top: 85%;
+    width: calc(100% / 3);
+    text-align: center;
+    line-height: 1;
+    transform: translateY(-50%);
+    transition: left 0.08s ease-out;
+    pointer-events: none;
+}
+
+.jogador img {
+    display: block;
+    object-fit: contain;
+    margin: 0 auto;
+    pointer-events: none;
+    user-select: none;
+    width: 16.67cqw;   /* equivale a 60px em 360px */
+    height: 33.33cqw;  /* equivale a 120px em 360px */
+}
+
+/* Painel de início e fim */
+
+.painel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    text-align: center;
+    background: rgba(59, 66, 88, 0.8);
+}
+
+.painel.oculto {
+    display: none;
+}
+
+.painel h1 {
+    margin: 0;
+    color: #f1d98f;
+}
+
+.painel p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Botões */
+
+button {
+    font: inherit;
+    cursor: pointer;
+}
+
+#botao {
+    padding: 10px 35px;
+    box-shadow:
+        1px 1px 0px #2c3144,
+        2px 2px 0px #2c3144,
+        3px 3px 0px #2c3144,
+        4px 4px 0px #2c3144,
+        5px 5px 0px #2c3144;
+    border: solid 5px #2c3144;
+    background: #f1d98f;
+    color: #2c3144;
+}
+
+#botao:hover {
+    filter: brightness(1.06);
+}
+
+/* Controles de toque */
+
+.controles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.controles button {
+    padding: 14px;
+    border: 0;
+    border-radius: 12px;
+    background: #2c3140;
+    color: #f4f4f6;
+}
+
+.controles button:active {
+    background: #3a4156;
+}
+
+/* Telas estreitas / celular: placar em cima, estrada no meio, controles embaixo */
+
+@media (max-width: 700px) {
+    .jogo {
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .placar {
+        width: 100%;
+        max-width: 420px;
+        flex-direction: row;
+        gap: 6px;
+    }
+
+    .info {
+        flex: 1;
+        padding: 6px 2px;
+    }
+
+    .info .rotulo {
+        font-size: 13px;
+    }
+
+    .info strong {
+        font-size: 1.1rem;
+    }
+
+    /* reserva espaço para placar (~70px) + controles (~60px) + folgas */
+    .estrada {
+        width: min(calc(100vw - 30px), calc((100dvh - 190px) * 0.6), 360px);
+    }
+
+    .controles {
+        width: min(100%, 420px);
+    }
+
+    .controles button {
+        padding: 10px;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .controles {
+        display: none;
+    }
+}

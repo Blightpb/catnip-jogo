@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CatNip</title>
+  <link rel="shortcut icon" href="gif/logo.png" type="image/x-icon">
+  <link rel="icon" href="gif/logo.png" sizes="16x16">
+
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="jogo">
+    <header class="placar">
+      <div class="info">
+        <span class="rotulo">Moedas</span>
+        <strong id="moedas">0</strong>
+      </div>
+      <div class="info">
+        <span class="rotulo">Meta (rodada anterior)</span>
+        <strong id="meta">0</strong>
+      </div>
+      <div class="info">
+        <span class="rotulo">Recorde</span>
+        <strong id="recorde">0</strong>
+      </div>
+      <div class="info">
+        <span class="rotulo">Total salvo</span>
+        <strong id="total">0</strong>
+      </div>
+    </header>
+
+    <section class="estrada" id="estrada" aria-label="Estrada">
+      <div class="faixas"></div>
+      <div id="itens"></div>
+      <div class="jogador" id="jogador">
+        <img src="gif/gato.gif" alt="gato">
+      </div>
+      <div class="painel" id="painel">
+        <h1 id="titulo">Corrida das Moedas</h1>
+        <p id="mensagem">Desvie dos obstáculos e colete moedas!<br>Use as setas ← → (ou A / D).</p>
+        <button id="botao" type="button">Jogar</button>
+      </div>
+    </section>
+
+    <div class="controles">
+      <button type="button" id="esq" aria-label="Mover para a esquerda">◀</button>
+      <button type="button" id="dir" aria-label="Mover para a direita">▶</button>
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+
+</html>
