@@ -1,4 +1,3 @@
-
 // Front-end: so desenha o que o Java manda e envia as teclas para ele.
 // Toda a logica do jogo (colisao, pontos, recorde) fica no backend Java.
 
@@ -13,10 +12,20 @@ const IMAGENS = {
     moeda: "/gif/moeda.gif",
 };
 
-const el = { 
+// Imagens do gato e duração da animação de game over.
+// DURACAO_GAME_OVER_MS deve ser igual à duração de "gato-game-over" no style.css.
+const IMAGEM_GATO = "/gif/gato.gif";
+const IMAGEM_GATO_MORTO = "/gif/gato-morto.gif";
+const DURACAO_GAME_OVER_MS = 1700;
+
+// Carrega a imagem do gato derrotado antes da batida, para não piscar na troca
+new Image().src = IMAGEM_GATO_MORTO;
+
+const el = {
     estrada: document.getElementById("estrada"),
     itens: document.getElementById("itens"),
     jogador: document.getElementById("jogador"),
+    jogadorImg: document.querySelector("#jogador img"),
     painel: document.getElementById("painel"),
     titulo: document.getElementById("titulo"),
     mensagem: document.getElementById("mensagem"),
@@ -28,6 +37,9 @@ const el = {
 };
 
 let estadoAnterior = "AGUARDANDO";
+let animandoFim = false; // true enquanto o gato faz a animação de game over
+let fimMostrado = false; // true depois que a tela "Jogar de novo" apareceu
+let timerFim = null;
 
 // Comunicação com o backend Java
 async function chamar(caminho, metodo = "GET") {
@@ -77,16 +89,55 @@ function desenhar(estado) {
 
     // Painel do jogo
     if (estado.estado === "JOGANDO") {
+        restaurarGato(); // nova rodada: o gato volta a correr
         el.painel.classList.add("oculto");
+    } else if (estado.estado === "FIM" && estadoAnterior === "JOGANDO") {
+        // Acabou de bater: toca a animação e só depois mostra "Jogar de novo"
+        iniciarAnimacaoFim(estado);
+        el.painel.classList.add("oculto");
+    } else if (animandoFim) {
+        el.painel.classList.add("oculto"); // espera a animação terminar
     } else {
         el.painel.classList.remove("oculto");
 
-        if (estado.estado === "FIM" && estadoAnterior !== "FIM") {
+        // Página aberta com a rodada já terminada: mostra o resultado direto
+        if (estado.estado === "FIM" && !fimMostrado) {
             mostrarFimDeJogo(estado);
+            fimMostrado = true;
         }
     }
 
     estadoAnterior = estado.estado;
+}
+
+// Animação de game over: o gato congela, pula e cai para fora da estrada.
+// Quando ela termina, aparece a tela para jogar novamente.
+function iniciarAnimacaoFim(estado) {
+    animandoFim = true;
+    fimMostrado = false;
+
+    el.jogadorImg.src = IMAGEM_GATO_MORTO;
+    el.jogador.classList.add("morto");
+
+    clearTimeout(timerFim);
+    timerFim = setTimeout(() => {
+        animandoFim = false;
+        fimMostrado = true;
+        mostrarFimDeJogo(estado);
+        el.painel.classList.remove("oculto");
+    }, DURACAO_GAME_OVER_MS);
+}
+
+// Volta o gato ao normal (e cancela a animação, se ainda estiver rodando)
+function restaurarGato() {
+    clearTimeout(timerFim);
+    animandoFim = false;
+    fimMostrado = false;
+
+    if (el.jogador.classList.contains("morto")) {
+        el.jogador.classList.remove("morto");
+        el.jogadorImg.src = IMAGEM_GATO;
+    }
 }
 
 // Exibe o resultado da partida
@@ -141,7 +192,8 @@ document.addEventListener("keydown", (e) => {
 
     } else if (
         (tecla === " " || tecla === "enter") &&
-        estadoAnterior !== "JOGANDO"
+        estadoAnterior !== "JOGANDO" &&
+        !animandoFim // só pode jogar de novo depois da animação
     ) {
         e.preventDefault();
         iniciar();

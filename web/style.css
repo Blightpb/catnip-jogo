@@ -178,6 +178,32 @@ body {
   height: 33.33cqw; /* equivale a 120px em 360px */
 }
 
+/* Game over: o gato congela, pula e cai para fora da estrada (como no Mario).
+   A duração (1.7s) deve ser igual a DURACAO_GAME_OVER_MS no game.js. */
+
+.jogador.morto img {
+  width: 19.3cqw; /* mesma escala do gato correndo (a imagem é mais larga) */
+  animation: gato-game-over 1.7s forwards;
+}
+
+@keyframes gato-game-over {
+  0%,
+  28% {
+    transform: translateY(0); /* congela, surpreso */
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
+  }
+
+  52%,
+  58% {
+    transform: translateY(-11cqw); /* topo do pulo */
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6);
+  }
+
+  100% {
+    transform: translateY(45cqw); /* cai para fora da estrada */
+  }
+}
+
 /* Painel de início e fim */
 
 .painel {
