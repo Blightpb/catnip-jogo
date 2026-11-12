@@ -14,7 +14,7 @@ rodada. No celular aparecem botões de toque.
 
 O jogo está publicado e funciona em qualquer dispositivo, sem instalar nada:
 
- **https://catnip-jogo.onrender.com/** 
+ **https://catnip-jogo-1.onrender.com/** 
 
 - Abra o link no navegador do computador ou do celular.
 - No plano gratuito do Render o serviço "dorme" após ~15 minutos sem uso. No
