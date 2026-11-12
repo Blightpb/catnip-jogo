@@ -1,66 +1,86 @@
-# Corrida das Moedas
+# CatNip 🐱 — Corrida das Moedas
 
 Jogo feito em **Java** (lógica) com **HTML, CSS e JavaScript** (tela).
-O personagem corre por uma estrada de 3 faixas, desvia de obstáculos
-(pedras, buracos e carros) e coleta moedas. Ao bater, a rodada termina, as
-moedas ficam **salvas** e o desafio da próxima rodada é coletar **mais moedas
-que na anterior**.
+O gato corre por uma estrada de 3 faixas, desvia de obstáculos (carros) e
+coleta moedas. Ao bater, a rodada termina, as moedas ficam **salvas** e o
+desafio da próxima rodada é coletar **mais moedas que na anterior**.
 
-## Como executar
+**Controles:** setas ← → (ou A / D) no computador. Espaço ou Enter começa uma
+rodada. No celular aparecem botões de toque.
 
-Requisito: JDK 11 ou superior (testado com Java 21).
+---
 
-- **Windows:** dê dois cliques em `executar.bat`
-- **Linux/macOS:** `./executar.sh`
-- **Manualmente:**
-  ```
-  javac -d out src/jogo/*.java
-  java -cp out jogo.ServidorJogo
-  ```
+## Jogar online (Render)
 
-Depois abra **http://localhost:8080** no navegador.
-(Para usar outra porta: `java -cp out jogo.ServidorJogo 9000`.)
+O jogo está publicado e funciona em qualquer dispositivo, sem instalar nada:
 
-**Controles:** setas ← → (ou A / D). Espaço ou Enter começa uma rodada.
-No celular aparecem botões de toque.
+ **https://catnip-jogo.onrender.com/** 
 
-> Execute sempre a partir da pasta do projeto, para o servidor achar a pasta
-> `web/` e gravar o `placar.properties`.
+- Abra o link no navegador do computador ou do celular.
+- No plano gratuito do Render o serviço "dorme" após ~15 minutos sem uso. No
+  primeiro acesso depois disso, **aguarde cerca de 1 minuto** até a página
+  carregar.
+- Cada pessoa joga a própria partida (o servidor identifica o visitante por um
+  cookie), então várias pessoas podem jogar ao mesmo tempo.
+- O placar fica guardado no disco do servidor, que é temporário: ele **zera
+  quando o serviço reinicia**.
 
-## Publicar na web (acessar de qualquer dispositivo)
+---
 
-O projeto já vem com `Dockerfile` e `render.yaml`. Cada visitante recebe um
-cookie (`sid`) e joga a **própria partida**, então várias pessoas podem jogar
-ao mesmo tempo. A porta vem da variável `PORT` (padrão 8080).
+## Executar no seu computador
 
-Exemplo com o **Render** (plano gratuito):
+### Requisito
 
-1. Suba esta pasta para um repositório no GitHub.
-2. Em render.com, entre com o GitHub e clique em **New → Blueprint**
-   (ou **New → Web Service** e escolha *Docker*).
-3. Selecione o repositório e confirme. Em ~3 minutos o Render gera um link
-   `https://catnip-jogo.onrender.com` (ou parecido).
+JDK 11 ou superior (testado com Java 21). Para conferir se está instalado:
 
-Observações:
-- No plano gratuito o serviço "dorme" após ~15 min sem uso e leva ~1 minuto
-  para acordar no primeiro acesso.
-- O disco é temporário: o placar (`dados/`) zera quando o serviço reinicia.
-  Para guardar de forma permanente, use um disco persistente (plano pago)
-  e aponte `DATA_DIR` para ele.
+```
+java -version
+javac -version
+```
+
+### Passo a passo
+
+1. Baixe ou clone o projeto e abra a pasta dele no terminal.
+2. Inicie o jogo de um destes jeitos:
+
+   - **Windows:** dê dois cliques em `executar.bat`
+   - **Linux/macOS:** `./executar.sh` (se der erro de permissão, rode antes
+     `chmod +x executar.sh`)
+   - **Manualmente (qualquer sistema):**
+     ```
+     javac -d out src/jogo/*.java
+     java -cp out jogo.ServidorJogo
+     ```
+
+3. Aguarde a mensagem `Jogo rodando na porta 8080` e abra no navegador:
+   **http://localhost:8080**
+
+Para usar outra porta: `java -cp out jogo.ServidorJogo 9000` e acesse
+`http://localhost:9000`. Para encerrar o jogo, volte ao terminal e aperte
+`Ctrl + C`.
+
+> Execute sempre a partir da **pasta do projeto**, para o servidor encontrar a
+> pasta `web/`. O placar é gravado na pasta `dados/`.
+
+Para jogar pelo celular na mesma rede Wi-Fi, descubra o IP do computador
+(`ipconfig` no Windows) e acesse `http://IP-DO-COMPUTADOR:8080` no celular.
+
+---
 
 ## Como funciona
 
 O navegador só desenha e envia as teclas. Toda a regra do jogo roda no Java:
 
-| Rota                    | O que faz                          |
-|-------------------------|------------------------------------|
-| `GET /api/estado`       | devolve o estado do jogo em JSON   |
-| `POST /api/iniciar`     | começa uma nova rodada             |
-| `POST /api/mover?dir=esq` (ou `dir`) | move o jogador       |
+| Rota                                 | O que faz                        |
+|--------------------------------------|----------------------------------|
+| `GET /api/estado`                    | devolve o estado do jogo em JSON |
+| `POST /api/iniciar`                  | começa uma nova rodada           |
+| `POST /api/mover?dir=esq` (ou `dir`) | move o jogador                   |
+| `GET /saude`                         | usado pelo Render para checar o serviço |
 
-O servidor avança o jogo a cada 40 ms e o navegador consulta o estado na
-mesma frequência. O placar (total de moedas, recorde, rodada anterior)
-é gravado em `placar.properties`.
+O servidor avança todas as partidas a cada 40 ms e o navegador consulta o
+estado na mesma frequência. O placar (total de moedas, recorde, rodada
+anterior) é gravado em `dados/`, um arquivo por visitante.
 
 ## Pilares da POO no código (`src/jogo`)
 
@@ -84,15 +104,7 @@ ElementoDoJogo (abstrata, implements Colidivel)
         ├── Buraco
         └── Carro
 
-Partida  → controla a rodada (usa os elementos e o Placar)
-Placar   → guarda moedas e recorde (implements Persistivel)
-ServidorJogo → servidor HTTP + relógio do jogo (main)
+Partida      → controla a rodada (usa os elementos e o Placar)
+Placar       → guarda moedas e recorde (implements Persistivel)
+ServidorJogo → servidor HTTP + relógio do jogo + sessão de cada visitante (main)
 ```
-
-## Ideias para evoluir
-
-- Novo obstáculo: crie `class Cone extends Obstaculo` e adicione-o em
-  `Partida.criarObstaculo()`.
-- Novo item coletável (escudo, ímã de moedas) implementando `Coletavel`.
-- Moeda de ouro valendo 5, herdando de `Moeda`.
-- Trocar os emojis em `web/game.js` por imagens.
