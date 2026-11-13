@@ -1,8 +1,8 @@
 package jogo;
 
-public class Pedra extends Obstaculo {
+public class CarroVermelho extends Obstaculo {
 
-    public Pedra(int faixa) {
+    public CarroVermelho(int faixa) {
         super(faixa, 1.0);
     }
 

@@ -135,11 +135,11 @@ public class Partida {
     private Obstaculo criarObstaculo(int faixa) {
         switch (sorteio.nextInt(3)) {
             case 0:
-                return new Pedra(faixa);
+                return new CarroVermelho(faixa);
             case 1:
-                return new Buraco(faixa);
+                return new CarroAzul(faixa);
             default:
-                return new Carro(faixa);
+                return new CarroRoxo(faixa);
         }
     }
 

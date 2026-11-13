@@ -1,9 +1,9 @@
 package jogo;
 
 /** Um carro vem mais rapido que os outros obstaculos: exige reflexo. */
-public class Carro extends Obstaculo {
+public class CarroRoxo extends Obstaculo {
 
-    public Carro(int faixa) {
+    public CarroRoxo(int faixa) {
         super(faixa, 1.5);
     }
 

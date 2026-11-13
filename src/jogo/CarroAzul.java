@@ -1,8 +1,8 @@
 package jogo;
 
-public class Buraco extends Obstaculo {
+public class CarroAzul extends Obstaculo {
 
-    public Buraco(int faixa) {
+    public CarroAzul(int faixa) {
         super(faixa, 1.0);
     }
 
